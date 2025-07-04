@@ -1,0 +1,13 @@
+{{- if .Values.ebJob.serviceAccount.create -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "eventbridge.jobServiceAccountName" . }}
+  labels:
+    {{- include "eventbridge.jobLabels" . | nindent 4 }}
+  {{- with .Values.ebJob.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+automountServiceAccountToken: {{ .Values.ebJob.serviceAccount.automount }}
+{{- end }}

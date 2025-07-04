@@ -1,0 +1,6 @@
+chart-dirs:
+  - charts
+target-branch: main
+chart-repos:
+  - bitnami=https://charts.bitnami.com/bitnami
+  - https://helm-charts.itboon.top/rocketmq
