@@ -1,0 +1,10 @@
+{{ if .Values.ebJob.configmap -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "eventbridge.fullname" . }}-job
+  labels:
+    {{- include "eventbridge.jobLabels" . | nindent 4 }}
+data:
+  {{- toYaml .Values.ebJob.configmap | nindent 2 }}
+{{- end }}

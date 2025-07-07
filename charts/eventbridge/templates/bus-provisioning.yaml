@@ -1,0 +1,87 @@
+{{ if .Values.rocketmq.provisioning.enabled -}}
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: eb-bus-provisioning
+  namespace: {{ .Release.Namespace }}
+  labels:
+    helm.sh/chart: {{ include "eventbridge.chart" . }}
+    {{- if .Chart.AppVersion }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    {{- end }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/name: eventbridge
+    app.kubernetes.io/component: eb-bus-provisioning
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: {{ include "eventbridge.chart" . }}
+        {{- if .Chart.AppVersion }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+        {{- end }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/name: eventbridge
+        app.kubernetes.io/component: eb-bus-provisioning
+    spec:
+      serviceAccountName: {{ include "eventbridge.serviceServiceAccountName" . }}
+      securityContext:
+        fsGroup: 3000
+        seccompProfile:
+          type: RuntimeDefault
+      restartPolicy: OnFailure
+      terminationGracePeriodSeconds: 0
+      containers:
+        - name: bus-provisioning
+          image: {{ .Values.rocketmq.provisioning.image.repository }}:{{ .Values.rocketmq.provisioning.image.tag }}
+          imagePullPolicy: "IfNotPresent"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 3000
+            runAsNonRoot: true
+            runAsUser: 3000
+            seLinuxOptions: {}
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+
+              # Create Default data bus
+              until ./mqadmin updateTopic -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -t EBInterBusDefault -c DefaultCluster -r 8 -w 8 | tee /dev/stderr | grep success; do
+              echo "Retrying updateTopic for EBInterBusDefault..."
+              sleep 1
+              done
+
+              ./mqadmin updateTopic -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -t EBInterDelayBusDefault -c DefaultCluster -r 8 -w 8 -a +message.type=DELAY | tee /dev/stderr | grep success
+              ./mqadmin updateTopic -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -t EBInterTargetExpDecayBusDefault -c DefaultCluster -r 8 -w 8 | tee /dev/stderr | grep success
+              ./mqadmin updateTopic -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -t EBInterTargetBackoffBusDefault -c DefaultCluster -r 8 -w 8 | tee /dev/stderr | grep success
+
+              ./mqadmin updateSubGroup -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -c DefaultCluster -g {{ .Values.rocketmq.provisioning.proxy.host | replace "." "" }}{{ .Values.rocketmq.provisioning.proxy.port }}EBInterBusDefault -r 3 | tee /dev/stderr | grep success
+              ./mqadmin updateSubGroup -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -c DefaultCluster -g {{ .Values.rocketmq.provisioning.proxy.host | replace "." "" }}{{ .Values.rocketmq.provisioning.proxy.port }}EBInterDelayBusDefault -r 3 | tee /dev/stderr | grep success
+              ./mqadmin updateSubGroup -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -c DefaultCluster -g {{ .Values.rocketmq.provisioning.proxy.host | replace "." "" }}{{ .Values.rocketmq.provisioning.proxy.port }}EBInterTargetExpDecayBusDefault -r 176 | tee /dev/stderr | grep success
+              ./mqadmin updateSubGroup -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -c DefaultCluster -g {{ .Values.rocketmq.provisioning.proxy.host | replace "." "" }}{{ .Values.rocketmq.provisioning.proxy.port }}EBInterTargetBackoffBusDefault -r 3 | tee /dev/stderr | grep success
+
+              {{- $ := .Values.rocketmq.provisioning }}
+              {{- range .Values.rocketmq.provisioning.buses }}
+
+              ./mqadmin updateTopic -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -t {{ default (print "EBInterBus" .name) .source_topic }} -c DefaultCluster -r 8 -w 8 {{ if .orderly }}-a +message.type=FIFO -o true {{ end }}| tee /dev/stderr | grep success
+              ./mqadmin updateTopic -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -t {{ default (print "EBInterDelayBus" .name) .source_delay_topic }} -c DefaultCluster -r 8 -w 8 -a +message.type=DELAY | tee /dev/stderr | grep success
+              ./mqadmin updateTopic -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -t {{ default (print "EBInterTargetExpDecayBus" .name) .target_exp_decay_topic }} -c DefaultCluster -r 8 -w 8 {{ if .orderly }}-a +message.type=FIFO -o true {{ end }}| tee /dev/stderr | grep success
+              ./mqadmin updateTopic -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -t {{ default (print "EBInterTargetBackoffBus" .name) .target_backoff_topic }} -c DefaultCluster -r 8 -w 8 {{ if .orderly }}-a +message.type=FIFO -o true {{ end }}| tee /dev/stderr | grep success
+
+              ./mqadmin updateSubGroup -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -c DefaultCluster -g {{ $.proxy.host | replace "." "" }}{{ $.proxy.port }}{{ default (print "EBInterBus" .name) .source_topic }} -r 3 {{ if .orderly }}-o true {{ end }}| tee /dev/stderr | grep success
+              ./mqadmin updateSubGroup -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -c DefaultCluster -g {{ $.proxy.host | replace "." "" }}{{ $.proxy.port }}{{ default (print "EBInterDelayBus" .name) .source_delay_topic }} -r 3 | tee /dev/stderr | grep success
+              ./mqadmin updateSubGroup -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -c DefaultCluster -g {{ $.proxy.host | replace "." "" }}{{ $.proxy.port }}{{ default (print "EBInterTargetExpDecayBus" .name) .target_exp_decay_topic }} -r 176 {{ if .orderly }}-o true {{ end }}| tee /dev/stderr | grep success
+              ./mqadmin updateSubGroup -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -c DefaultCluster -g {{ $.proxy.host | replace "." "" }}{{ $.proxy.port }}{{ default (print "EBInterTargetBackoffBus" .name) .target_backoff_topic }} -r 3 {{ if .orderly }}-o true {{ end }}| tee /dev/stderr | grep success
+              {{- end }}
+{{- end }}

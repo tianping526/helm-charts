@@ -1,0 +1,24 @@
+{{- if .Values.rocketmq.broker.podDisruptionBudget.enabled -}}
+apiVersion: {{ include "eventbridge.pdb.apiVersion" . }}
+kind: PodDisruptionBudget
+metadata:
+  name: rmq-broker-pdb
+  namespace: {{ .Release.Namespace }}
+spec:
+  {{- if .Values.rocketmq.broker.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.rocketmq.broker.podDisruptionBudget.minAvailable }}
+  {{- end }}
+  {{- if .Values.rocketmq.broker.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.rocketmq.broker.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+  {{- if (semverCompare ">= 1.27-0" .Capabilities.KubeVersion.Version) }}
+  {{- with .Values.rocketmq.broker.podDisruptionBudget.unhealthyPodEvictionPolicy }}
+  unhealthyPodEvictionPolicy: {{ . }}
+  {{- end }}
+  {{- end }}
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rocketmq
+      component: broker
+{{- end -}}
