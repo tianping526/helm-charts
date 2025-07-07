@@ -21,6 +21,15 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+      - name: Add Helm Repos from config.yaml
+        run: |
+          sudo apt-get update && sudo apt-get install -y yq
+          yq '.chart-repos[]' config.yaml | while read -r repo; do
+            name=$(echo "$repo" | cut -d'=' -f1)
+            url=$(echo "$repo" | cut -d'=' -f2-)
+            helm repo add "$name" "$url"
+          done
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
         env:
