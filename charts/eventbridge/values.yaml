@@ -446,7 +446,7 @@ rocketmq:
     master:
       brokerRole: SYNC_MASTER
     config:
-      fileReservedTime:  "720" # 30 days
+      fileReservedTime: "720"  # 30 days
     podDisruptionBudget:
       # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
       enabled: true
