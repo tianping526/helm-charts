@@ -469,6 +469,9 @@ rocketmq:
       minAvailable: 60%
       maxUnavailable:
       unhealthyPodEvictionPolicy: IfHealthyBudget
+  dashboard:
+    image:
+      tag: 2.0.1
   controllerModeEnabled: true
   controller:
     replicaCount: 3
