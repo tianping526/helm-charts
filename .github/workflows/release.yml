@@ -21,9 +21,20 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+      - name: Set up Helm
+        uses: azure/setup-helm@v4.2.0
+
+      - name: Install yq
+        run: |
+          sudo apt update
+          sudo apt install wget
+          VERSION=v4.44.3
+          BINARY=yq_linux_amd64
+          sudo wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY} -O /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+
       - name: Add Helm Repos from config.yaml
         run: |
-          sudo apt-get update && sudo apt-get install -y yq
           yq '.chart-repos[]' config.yaml | while read -r repo; do
             name=$(echo "$repo" | cut -d'=' -f1)
             url=$(echo "$repo" | cut -d'=' -f2-)
