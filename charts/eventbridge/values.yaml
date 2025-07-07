@@ -85,7 +85,7 @@ ebService:
   gRPCIngress:
     enabled: false
     className: ""
-    annotations: { }
+    annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
     hosts:
@@ -93,7 +93,7 @@ ebService:
         paths:
           - path: /
             pathType: ImplementationSpecific
-    tls: [ ]
+    tls: []
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
@@ -446,7 +446,7 @@ rocketmq:
     master:
       brokerRole: SYNC_MASTER
     config:
-      fileReservedTime: "720" # 30 days
+      fileReservedTime:  "720" # 30 days
     podDisruptionBudget:
       # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
       enabled: true
