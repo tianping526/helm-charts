@@ -177,6 +177,8 @@ ebService:
             source: postgresql://postgres:${POSTGRES_PASSWORD}@eb-pg-ha-pgpool:5432/postgres
           redis:
             password: ${REDIS_PASSWORD}
+        auth:
+          key: ""
 
   configmap:
     config.yaml: |

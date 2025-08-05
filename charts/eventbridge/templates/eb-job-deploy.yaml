@@ -11,10 +11,12 @@ spec:
       {{- include "eventbridge.jobSelectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.ebJob.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/eb-job-cm.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/eb-job-secret.yaml") . | sha256sum }}
+        {{- with .Values.ebJob.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         {{- include "eventbridge.jobLabels" . | nindent 8 }}
         {{- with .Values.ebJob.podLabels }}

@@ -13,10 +13,12 @@ spec:
       {{- include "eventbridge.serviceSelectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.ebService.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/eb-service-cm.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/eb-service-secret.yaml") . | sha256sum }}
+        {{- with .Values.ebService.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         {{- include "eventbridge.serviceLabels" . | nindent 8 }}
         {{- with .Values.ebService.podLabels }}
