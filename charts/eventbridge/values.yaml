@@ -200,7 +200,7 @@ ebService:
             conn_max_life_time: 0s
             conn_max_idle_time: 300s
           redis:
-            addrs: 
+            addrs:
               - eb-redis-cluster-0.eb-redis-cluster-headless:6379
               - eb-redis-cluster-1.eb-redis-cluster-headless:6379
               - eb-redis-cluster-2.eb-redis-cluster-headless:6379
