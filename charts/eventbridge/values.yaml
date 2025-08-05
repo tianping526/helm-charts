@@ -178,7 +178,7 @@ ebService:
           redis:
             password: ${REDIS_PASSWORD}
         auth:
-          key: ""
+          key: ${EB_SERVICE_AUTH_KEY}
 
   configmap:
     config.yaml: |
@@ -200,8 +200,13 @@ ebService:
             conn_max_life_time: 0s
             conn_max_idle_time: 300s
           redis:
-            addr: eb-redis-cluster:6379
-            db_index: 0
+            addrs: 
+              - eb-redis-cluster-0.eb-redis-cluster-headless:6379
+              - eb-redis-cluster-1.eb-redis-cluster-headless:6379
+              - eb-redis-cluster-2.eb-redis-cluster-headless:6379
+              - eb-redis-cluster-3.eb-redis-cluster-headless:6379
+              - eb-redis-cluster-4.eb-redis-cluster-headless:6379
+              - eb-redis-cluster-5.eb-redis-cluster-headless:6379
             dial_timeout: 1s
             read_timeout: 0.2s
             write_timeout: 0.2s
