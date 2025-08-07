@@ -1,12 +1,12 @@
 dependencies:
 - name: postgresql-ha
   repository: https://charts.bitnami.com/bitnami
-  version: 16.0.16
-- name: redis-cluster
+  version: 16.0.22
+- name: redis
   repository: https://charts.bitnami.com/bitnami
-  version: 12.0.10
+  version: 21.2.14
 - name: rocketmq
   repository: https://helm-charts.itboon.top/rocketmq
   version: 12.4.0
-digest: sha256:d33f4e1114747f6d89f496219ecfb2a836e4257c27ab26edc28cc5cb4ce89467
-generated: "2025-07-03T15:16:43.597399+08:00"
+digest: sha256:6168333c6776cadfcd0d3558b2959fba4d170d2290e2604af598fd08f7dd07ac
+generated: "2025-08-07T16:00:29.171557+08:00"

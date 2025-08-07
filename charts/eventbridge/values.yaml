@@ -162,7 +162,7 @@ ebService:
     - name: REDIS_PASSWORD
       valueFrom:
         secretKeyRef:
-          name: eb-redis-cluster
+          name: eb-redis
           key: redis-password
 
   # Configurations containing sensitive information
@@ -201,12 +201,8 @@ ebService:
             conn_max_idle_time: 300s
           redis:
             addrs:
-              - eb-redis-cluster-0.eb-redis-cluster-headless:6379
-              - eb-redis-cluster-1.eb-redis-cluster-headless:6379
-              - eb-redis-cluster-2.eb-redis-cluster-headless:6379
-              - eb-redis-cluster-3.eb-redis-cluster-headless:6379
-              - eb-redis-cluster-4.eb-redis-cluster-headless:6379
-              - eb-redis-cluster-5.eb-redis-cluster-headless:6379
+              - eb-redis:26379
+            master_name: mymaster
             dial_timeout: 1s
             read_timeout: 0.2s
             write_timeout: 0.2s
@@ -438,9 +434,11 @@ postgresql-ha:
   pgpool:
     replicaCount: 2
 
-redis-cluster:
+redis:
   enabled: true
-  fullnameOverride: "eb-redis-cluster"
+  fullnameOverride: "eb-redis"
+  sentinel:
+    enabled: true
 
 rocketmq:
   enabled: true
