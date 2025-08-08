@@ -1,0 +1,13 @@
+{{ if .Values.dashboards.enable -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    grafana_dashboard: "1"
+  name: eventbridge-dashboards
+data:
+  {{- range $path, $_ := .Files.Glob "dashboards/*.json" }}
+  {{ $path | base }}: |-
+    {{ $.Files.Get $path }}
+  {{- end }}
+  {{- end }}
