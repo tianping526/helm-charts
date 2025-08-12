@@ -337,7 +337,7 @@ ebJob:
   podDisruptionBudget:
     # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
     enabled: true
-    minAvailable: 100%
+    minAvailable: 60%
     maxUnavailable:
     unhealthyPodEvictionPolicy: IfHealthyBudget
 
