@@ -451,11 +451,12 @@ rocketmq:
   broker:
     size:
       master: 2
-      replica: 2
+      replica: 1
     master:
       brokerRole: SYNC_MASTER
     config:
       fileReservedTime: "720"  # 30 days
+      allAckInSyncStateSet: true
     podDisruptionBudget:
       # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
       enabled: true
