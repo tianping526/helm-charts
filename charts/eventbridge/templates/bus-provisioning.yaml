@@ -66,10 +66,10 @@ spec:
               ./mqadmin updateTopic -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -t EBInterTargetExpDecayBusDefault -c DefaultCluster -r 8 -w 8 | tee /dev/stderr | grep success
               ./mqadmin updateTopic -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -t EBInterTargetBackoffBusDefault -c DefaultCluster -r 8 -w 8 | tee /dev/stderr | grep success
 
-              ./mqadmin updateSubGroup -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -c DefaultCluster -g {{ .Values.rocketmq.provisioning.proxy.host | replace "." "" }}{{ .Values.rocketmq.provisioning.proxy.port }}EBInterBusDefault -r 3 | tee /dev/stderr | grep success
-              ./mqadmin updateSubGroup -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -c DefaultCluster -g {{ .Values.rocketmq.provisioning.proxy.host | replace "." "" }}{{ .Values.rocketmq.provisioning.proxy.port }}EBInterDelayBusDefault -r 3 | tee /dev/stderr | grep success
-              ./mqadmin updateSubGroup -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -c DefaultCluster -g {{ .Values.rocketmq.provisioning.proxy.host | replace "." "" }}{{ .Values.rocketmq.provisioning.proxy.port }}EBInterTargetExpDecayBusDefault -r 176 | tee /dev/stderr | grep success
-              ./mqadmin updateSubGroup -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -c DefaultCluster -g {{ .Values.rocketmq.provisioning.proxy.host | replace "." "" }}{{ .Values.rocketmq.provisioning.proxy.port }}EBInterTargetBackoffBusDefault -r 3 | tee /dev/stderr | grep success
+              ./mqadmin updateSubGroup -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -c DefaultCluster -g DefaultSource -r 3 | tee /dev/stderr | grep success
+              ./mqadmin updateSubGroup -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -c DefaultCluster -g DefaultSourceDelay -r 3 | tee /dev/stderr | grep success
+              ./mqadmin updateSubGroup -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -c DefaultCluster -g DefaultTargetExpDecay -r 176 | tee /dev/stderr | grep success
+              ./mqadmin updateSubGroup -n {{ .Values.rocketmq.provisioning.nameserver.host }}:{{ .Values.rocketmq.provisioning.nameserver.port }} -c DefaultCluster -g DefaultTargetBackoff -r 3 | tee /dev/stderr | grep success
 
               {{- $ := .Values.rocketmq.provisioning }}
               {{- range .Values.rocketmq.provisioning.buses }}
@@ -79,9 +79,9 @@ spec:
               ./mqadmin updateTopic -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -t {{ default (print "EBInterTargetExpDecayBus" .name) .target_exp_decay_topic }} -c DefaultCluster -r 8 -w 8 {{ if .orderly }}-a +message.type=FIFO -o true {{ end }}| tee /dev/stderr | grep success
               ./mqadmin updateTopic -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -t {{ default (print "EBInterTargetBackoffBus" .name) .target_backoff_topic }} -c DefaultCluster -r 8 -w 8 {{ if .orderly }}-a +message.type=FIFO -o true {{ end }}| tee /dev/stderr | grep success
 
-              ./mqadmin updateSubGroup -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -c DefaultCluster -g {{ $.proxy.host | replace "." "" }}{{ $.proxy.port }}{{ default (print "EBInterBus" .name) .source_topic }} -r 3 {{ if .orderly }}-o true {{ end }}| tee /dev/stderr | grep success
-              ./mqadmin updateSubGroup -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -c DefaultCluster -g {{ $.proxy.host | replace "." "" }}{{ $.proxy.port }}{{ default (print "EBInterDelayBus" .name) .source_delay_topic }} -r 3 | tee /dev/stderr | grep success
-              ./mqadmin updateSubGroup -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -c DefaultCluster -g {{ $.proxy.host | replace "." "" }}{{ $.proxy.port }}{{ default (print "EBInterTargetExpDecayBus" .name) .target_exp_decay_topic }} -r 176 {{ if .orderly }}-o true {{ end }}| tee /dev/stderr | grep success
-              ./mqadmin updateSubGroup -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -c DefaultCluster -g {{ $.proxy.host | replace "." "" }}{{ $.proxy.port }}{{ default (print "EBInterTargetBackoffBus" .name) .target_backoff_topic }} -r 3 {{ if .orderly }}-o true {{ end }}| tee /dev/stderr | grep success
+              ./mqadmin updateSubGroup -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -c DefaultCluster -g {{ .name }}Source -r 3 {{ if .orderly }}-o true {{ end }}| tee /dev/stderr | grep success
+              ./mqadmin updateSubGroup -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -c DefaultCluster -g {{ .name }}SourceDelay -r 3 | tee /dev/stderr | grep success
+              ./mqadmin updateSubGroup -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -c DefaultCluster -g {{ .name }}TargetExpDecay -r 176 {{ if .orderly }}-o true {{ end }}| tee /dev/stderr | grep success
+              ./mqadmin updateSubGroup -n {{ $.nameserver.host }}:{{ $.nameserver.port }} -c DefaultCluster -g {{ .name }}TargetBackoff -r 3 {{ if .orderly }}-o true {{ end }}| tee /dev/stderr | grep success
               {{- end }}
 {{- end }}
