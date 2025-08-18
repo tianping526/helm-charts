@@ -55,6 +55,7 @@ ebService:
   service:
     # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
     type: ClusterIP
+    additionalHeadless: true
     # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
     ports:
       - name: http
@@ -206,7 +207,6 @@ ebService:
             dial_timeout: 1s
             read_timeout: 0.2s
             write_timeout: 0.2s
-          default_mq: rocketmq://eb-rmq-proxy:8081
         # log:
         #   level: INFO # DEBUG, INFO, WARN, ERROR
         #   encoding: JSON # JSON, CONSOLE
@@ -393,7 +393,6 @@ ebJob:
             max_idle: 10
             conn_max_life_time: 0s
             conn_max_idle_time: 300s
-          default_mq: rocketmq://eb-rmq-proxy:8081
         # log:
         #   level: INFO # DEBUG, INFO, WARN, ERROR
         #   encoding: JSON # JSON, CONSOLE
@@ -475,6 +474,8 @@ rocketmq:
       unhealthyPodEvictionPolicy: IfHealthyBudget
   proxy:
     replicaCount: 3
+    service:
+      clusterIP: None
     podDisruptionBudget:
       # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
       enabled: true
@@ -494,14 +495,3 @@ rocketmq:
       minAvailable: 60%
       maxUnavailable:
       unhealthyPodEvictionPolicy: IfHealthyBudget
-  provisioning:
-    enabled: true
-    image:
-      repository: "apache/rocketmq"
-      tag: "5.3.3"
-    nameserver:
-      host: "eb-rmq-nameserver"
-      port: 9876
-#    buses: # No need to specify the Default bus, it will be created automatically.
-#      - name: "Orderly"
-#        orderly: true
