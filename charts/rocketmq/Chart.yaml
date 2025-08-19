@@ -1,0 +1,13 @@
+apiVersion: v2
+appVersion: 5.3.3
+description: RocketMQ Helm chart
+keywords:
+- rocketmq
+- kubernetes
+- apache
+maintainers:
+  - name: tianping526
+    email: 1553260215@qq.com
+name: rocketmq
+type: application
+version: 5.3.3
