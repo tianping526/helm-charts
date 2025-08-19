@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 5.3.3
-description: RocketMQ Helm chart
+description: A Helm chart for deploying a RocketMQ cluster
 keywords:
 - rocketmq
 - kubernetes
