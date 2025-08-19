@@ -34,15 +34,15 @@ broker:
 
   replica:
     jvm:
-      maxHeapSize: 1300M
+      maxHeapSize: 2048M
       # javaOptsOverride: ""
     resources:
       limits:
         cpu: 4
         memory: 16Gi
       requests:
-        cpu: 50m
-        memory: 2Gi
+        cpu: 200m
+        memory: 3Gi
 
   hostNetwork: false
 
