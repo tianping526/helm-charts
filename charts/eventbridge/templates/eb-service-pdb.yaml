@@ -1,0 +1,25 @@
+{{- if .Values.ebService.podDisruptionBudget.enabled -}}
+apiVersion: {{ include "eventbridge.pdb.apiVersion" . }}
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "eventbridge.fullname" . }}-service
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "eventbridge.serviceLabels" . | nindent 4 }}
+spec:
+  {{- if .Values.ebService.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.ebService.podDisruptionBudget.minAvailable }}
+  {{- end }}
+  {{- if .Values.ebService.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.ebService.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+  {{- if (semverCompare ">= 1.27-0" .Capabilities.KubeVersion.Version) }}
+  {{- with .Values.ebService.podDisruptionBudget.unhealthyPodEvictionPolicy }}
+  unhealthyPodEvictionPolicy: {{ . }}
+  {{- end }}
+  {{- end }}
+
+  selector:
+    matchLabels:
+      {{- include "eventbridge.serviceSelectorLabels" . | nindent 6 }}
+{{- end -}}

@@ -1,0 +1,127 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "eventbridge.fullname" . }}-service
+  labels:
+    {{- include "eventbridge.serviceLabels" . | nindent 4 }}
+spec:
+  {{- if not .Values.ebService.autoscaling.enabled }}
+  replicas: {{ .Values.ebService.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "eventbridge.serviceSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/eb-service-cm.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/eb-service-secret.yaml") . | sha256sum }}
+        {{- with .Values.ebService.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "eventbridge.serviceLabels" . | nindent 8 }}
+        {{- with .Values.ebService.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.ebService.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "eventbridge.serviceServiceAccountName" . }}
+      {{- with .Values.ebService.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-service
+          {{- with .Values.ebService.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.ebService.image.repository }}:{{ .Values.ebService.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.ebService.image.pullPolicy }}
+          {{- with .Values.ebService.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ebService.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ebService.service.ports }}
+          ports:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ebService.startupProbe }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ebService.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ebService.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ebService.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: eb-service-config
+              mountPath: /data/conf/config.yaml
+              subPath: config.yaml
+            - name: eb-service-secret
+              mountPath: /data/conf/secret.yaml
+              subPath: secret.yaml
+            - name: tmp
+              mountPath: /tmp
+            {{- with .Values.ebService.volumeMounts }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+      volumes:
+        - name: eb-service-config
+          configMap:
+            name: {{ include "eventbridge.fullname" . }}-service
+        - name: eb-service-secret
+          secret:
+            secretName: {{ default (printf "%s-service" (include "eventbridge.fullname" .)) .Values.ebService.secret.existingSecret }}
+        - name: tmp
+          emptyDir: {}
+        {{- with .Values.ebService.volumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.ebService.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    {{- include "eventbridge.serviceSelectorLabels" . | nindent 20 }}
+                topologyKey: "kubernetes.io/hostname"
+        {{- with .Values.ebService.affinity }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.ebService.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ebService.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- range . }}
+        - labelSelector:
+            matchLabels:
+              {{- include "eventbridge.serviceSelectorLabels" $ | nindent 14 }}
+          maxSkew: {{ .maxSkew }}
+          topologyKey: {{ .topologyKey }}
+          whenUnsatisfiable: {{ .whenUnsatisfiable }}
+        {{- end }}
+      {{- end }}
