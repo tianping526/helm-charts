@@ -1,0 +1,24 @@
+{{- $clusterRole := "controller" -}}
+{{- if .Values.controller.podDisruptionBudget.enabled -}}
+apiVersion: {{ include "rocketmq.pdb.apiVersion" . }}
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "rocketmq.fullname" . }}-{{ $clusterRole }}-pdb
+spec:
+  {{- if .Values.controller.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.controller.podDisruptionBudget.minAvailable }}
+  {{- end }}
+  {{- if .Values.controller.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.controller.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+  {{- if (semverCompare ">= 1.27-0" .Capabilities.KubeVersion.Version) }}
+  {{- with .Values.controller.podDisruptionBudget.unhealthyPodEvictionPolicy }}
+  unhealthyPodEvictionPolicy: {{ . }}
+  {{- end }}
+  {{- end }}
+
+  selector:
+    matchLabels:
+      {{- include "rocketmq.selectorLabels" $ | nindent 6 }}
+      component: {{ $clusterRole }}
+{{- end }}
