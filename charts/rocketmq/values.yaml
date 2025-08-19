@@ -15,10 +15,10 @@ broker:
   size:
     master: 2
     replica: 1
-  
+
   # podSecurityContext: {}
   # containerSecurityContext: {}
-  
+
   master:
     brokerRole: SYNC_MASTER
     jvm:
@@ -31,7 +31,7 @@ broker:
       requests:
         cpu: 200m
         memory: 3Gi
-  
+
   replica:
     jvm:
       maxHeapSize: 1300M
@@ -49,8 +49,8 @@ broker:
   persistence:
     enabled: true
     size: 20Gi
-    #storageClass: "gp2"
-  
+#    storageClass: "gp2"
+
   aclConfigMapEnabled: false
   aclConfig: |
     globalWhiteRemoteAddresses:
@@ -103,11 +103,11 @@ nameserver:
       cpu: 100m
       memory: 1Gi
       ephemeral-storage: 1Gi
-  
+
   persistence:
     enabled: false
     size: 20Gi
-    #storageClass: "gp2"
+#    storageClass: "gp2"
 
   affinityOverride: {}
   tolerations: []
@@ -210,12 +210,12 @@ dashboard:
       path: /
       port: http
   livenessProbe: {}
-  
+
   service:
     annotations: {}
     type: ClusterIP
     # nodePort: 31007
-  
+
   ingress:
     enabled: false
     className: ""
@@ -248,17 +248,17 @@ controller:
     size: 20Gi
     accessModes:
       - ReadWriteOnce
-  
+
   ## controller.service
   service:
     annotations: {}
-  
+
   ## controller.config
   config:
     controllerDLegerGroup: group1
     enableElectUncleanMaster: false
     notifyBrokerRoleChanged: true
-  
+
   ## controller.readinessProbe
   readinessProbe:
     tcpSocket:
