@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "eventbridge.fullname" . }}-service-test-connection"
+  labels:
+    {{- include "eventbridge.serviceLabels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "eventbridge.fullname" . }}-service:{{ (index .Values.ebService.service.ports 0).containerPort }}/v1/eventbridge/dispatcher/schemas?types=NonExistentType']
+  restartPolicy: Never

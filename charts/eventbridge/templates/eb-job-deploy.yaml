@@ -1,0 +1,125 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "eventbridge.fullname" . }}-job
+  labels:
+    {{- include "eventbridge.jobLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.ebJob.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "eventbridge.jobSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/eb-job-cm.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/eb-job-secret.yaml") . | sha256sum }}
+        {{- with .Values.ebJob.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "eventbridge.jobLabels" . | nindent 8 }}
+        {{- with .Values.ebJob.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.ebJob.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "eventbridge.jobServiceAccountName" . }}
+      {{- with .Values.ebJob.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-job
+          {{- with .Values.ebJob.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.ebJob.image.repository }}:{{ .Values.ebJob.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.ebJob.image.pullPolicy }}
+          {{- with .Values.ebJob.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ebJob.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ebJob.service.ports }}
+          ports:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ebJob.startupProbe }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ebJob.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ebJob.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ebJob.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: eb-job-config
+              mountPath: /data/conf/config.yaml
+              subPath: config.yaml
+            - name: eb-job-secret
+              mountPath: /data/conf/secret.yaml
+              subPath: secret.yaml
+            - name: tmp
+              mountPath: /tmp
+            {{- with .Values.ebJob.volumeMounts }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+      volumes:
+        - name: eb-job-config
+          configMap:
+            name: {{ include "eventbridge.fullname" . }}-job
+        - name: eb-job-secret
+          secret:
+            secretName: {{ default (printf "%s-job" (include "eventbridge.fullname" .)) .Values.ebJob.secret.existingSecret }}
+        - name: tmp
+          emptyDir: {}
+        {{- with .Values.ebJob.volumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.ebJob.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    {{- include "eventbridge.jobSelectorLabels" . | nindent 20 }}
+                topologyKey: "kubernetes.io/hostname"
+        {{- with .Values.ebJob.affinity }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.ebJob.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ebJob.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- range . }}
+        - labelSelector:
+            matchLabels:
+              {{- include "eventbridge.jobSelectorLabels" $ | nindent 14 }}
+          maxSkew: {{ .maxSkew }}
+          topologyKey: {{ .topologyKey }}
+          whenUnsatisfiable: {{ .whenUnsatisfiable }}
+        {{- end }}
+      {{- end }}
