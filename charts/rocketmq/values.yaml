@@ -136,7 +136,7 @@ nameserver:
 
 proxy:
   enabled: true
-  replicaCount: 2
+  replicaCount: 3
   jvm:
     maxHeapSize: 1300M
     # javaOptsOverride: ""
@@ -171,8 +171,8 @@ proxy:
   podDisruptionBudget:
     # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
     enabled: true
-    minAvailable:
-    maxUnavailable: 1
+    minAvailable: 60%
+    maxUnavailable:
     unhealthyPodEvictionPolicy: IfHealthyBudget
 
 dashboard:
