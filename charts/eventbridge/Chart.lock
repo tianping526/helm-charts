@@ -6,7 +6,7 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
   version: 21.2.14
 - name: rocketmq
-  repository: https://helm-charts.itboon.top/rocketmq
-  version: 12.4.0
-digest: sha256:6168333c6776cadfcd0d3558b2959fba4d170d2290e2604af598fd08f7dd07ac
-generated: "2025-08-07T16:00:29.171557+08:00"
+  repository: file://../rocketmq
+  version: 5.3.3
+digest: sha256:28bf26873fd64f27ff14540e6a33336d2972d12836f811d322a1c5823e290374
+generated: "2025-08-19T10:53:17.781085+08:00"
