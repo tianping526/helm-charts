@@ -34,7 +34,7 @@ dependencies:
     condition: redis.enabled
   - name: rocketmq
     version: ~5.3.3
-    repository: https://tianping526.github.io/helm-charts
+    repository: file://../rocketmq
     condition: rocketmq.enabled
 
 maintainers:
