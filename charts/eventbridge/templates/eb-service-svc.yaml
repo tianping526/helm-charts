@@ -4,6 +4,7 @@ kind: Service
 metadata:
   name: {{ include "eventbridge.fullname" . }}-service
   labels:
+    monitors.monitoring.coreos.com: 1
     {{- include "eventbridge.serviceLabels" . | nindent 4 }}
 spec:
   type: {{ .Values.ebService.service.type }}
