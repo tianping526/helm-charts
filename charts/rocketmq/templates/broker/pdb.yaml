@@ -1,18 +1,18 @@
 {{- $clusterRole := "broker" -}}
-{{- if .Values.nameserver.podDisruptionBudget.enabled -}}
+{{- if .Values.broker.podDisruptionBudget.enabled -}}
 apiVersion: {{ include "rocketmq.pdb.apiVersion" . }}
 kind: PodDisruptionBudget
 metadata:
   name: {{ include "rocketmq.fullname" . }}-{{ $clusterRole }}-pdb
 spec:
-  {{- if .Values.nameserver.podDisruptionBudget.minAvailable }}
-  minAvailable: {{ .Values.nameserver.podDisruptionBudget.minAvailable }}
+  {{- if .Values.broker.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.broker.podDisruptionBudget.minAvailable }}
   {{- end }}
-  {{- if .Values.nameserver.podDisruptionBudget.maxUnavailable }}
-  maxUnavailable: {{ .Values.nameserver.podDisruptionBudget.maxUnavailable }}
+  {{- if .Values.broker.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.broker.podDisruptionBudget.maxUnavailable }}
   {{- end }}
   {{- if (semverCompare ">= 1.27-0" .Capabilities.KubeVersion.Version) }}
-  {{- with .Values.nameserver.podDisruptionBudget.unhealthyPodEvictionPolicy }}
+  {{- with .Values.broker.podDisruptionBudget.unhealthyPodEvictionPolicy }}
   unhealthyPodEvictionPolicy: {{ . }}
   {{- end }}
   {{- end }}
