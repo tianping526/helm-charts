@@ -7,6 +7,6 @@ dependencies:
   version: 21.2.14
 - name: rocketmq
   repository: https://tianping526.github.io/helm-charts
-  version: 5.3.4
-digest: sha256:b4190d76de3bdc12823da71009c626c8d7088af1142d7e3876f987037d3f77a2
-generated: "2025-08-19T18:36:16.500584+08:00"
+  version: 5.3.5
+digest: sha256:8bebbc894f0f6a95a4d93958074ac4a2e0ca70fc851279a1e9d774a0cf9d5df9
+generated: "2025-08-20T15:42:21.539129+08:00"
