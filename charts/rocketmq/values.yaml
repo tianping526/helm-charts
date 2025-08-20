@@ -13,7 +13,7 @@ podSecurityContext:
 
 broker:
   size:
-    master: 2
+    master: 3
     replica: 1
 
   # podSecurityContext: {}
@@ -29,7 +29,7 @@ broker:
         cpu: 4
         memory: 16Gi
       requests:
-        cpu: 200m
+        cpu: 400m
         memory: 3Gi
 
   replica:
@@ -41,7 +41,7 @@ broker:
         cpu: 4
         memory: 16Gi
       requests:
-        cpu: 200m
+        cpu: 400m
         memory: 3Gi
 
   hostNetwork: false
