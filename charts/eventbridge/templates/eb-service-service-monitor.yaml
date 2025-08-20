@@ -15,7 +15,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      monitors.monitoring.coreos.com: 1
+      monitors.monitoring.coreos.com: "1"
       {{- include "eventbridge.serviceSelectorLabels" . | nindent 6 }}
   endpoints:
     {{- toYaml .Values.ebService.serviceMonitor.metricsEndpoints | nindent 4 }}
