@@ -22,7 +22,7 @@ broker:
   master:
     brokerRole: SYNC_MASTER
     jvm:
-      maxHeapSize: 2048M
+      maxHeapSize: 1300M
       # javaOptsOverride: ""
     resources:
       limits:
@@ -30,11 +30,11 @@ broker:
         memory: 16Gi
       requests:
         cpu: 400m
-        memory: 3Gi
+        memory: 2Gi
 
   replica:
     jvm:
-      maxHeapSize: 2048M
+      maxHeapSize: 1300M
       # javaOptsOverride: ""
     resources:
       limits:
@@ -42,7 +42,7 @@ broker:
         memory: 16Gi
       requests:
         cpu: 400m
-        memory: 3Gi
+        memory: 2Gi
 
   hostNetwork: false
 
