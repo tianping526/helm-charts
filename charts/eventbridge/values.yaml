@@ -386,6 +386,7 @@ ebJob:
             delay_timeout: 1s # 0 means default timeout 1s
             target_exp_decay_timeout: 1s # 0 means default timeout 1s
             target_backoff_timeout: 1s # 0 means default timeout 1s
+            workers_per_mq_topic: 1024
         data:
           database:
             driver: postgres
