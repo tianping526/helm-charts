@@ -125,9 +125,9 @@ ebService:
   autoscaling:
     enabled: true
     minReplicas: 3
-    maxReplicas: 6
+    maxReplicas: 9
     targetCPUUtilizationPercentage: 80
-    # targetMemoryUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
   podDisruptionBudget:
     # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
