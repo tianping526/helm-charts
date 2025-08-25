@@ -8,7 +8,7 @@ fullnameOverride: "eb"
 
 ebService:
   # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
-  replicaCount: 1
+  replicaCount: 3
 
   # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
   image:
@@ -99,17 +99,17 @@ ebService:
     #    hosts:
     #      - chart-example.local
 
-  resources: {}
+  resources:
     # We usually recommend not specifying default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
+    limits:
+      cpu: 3000m
+      memory: 1024Mi
+    requests:
+      cpu: 1000m
+      memory: 512Mi
 
   # This is to set up the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   livenessProbe:
@@ -312,17 +312,17 @@ ebJob:
     #    hosts:
     #      - chart-example.local
 
-  resources: {}
+  resources:
     # We usually recommend not specifying default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-  #   memory: 128Mi
+    limits:
+      cpu: 3000m
+      memory: 1Gi
+    requests:
+      cpu: 1000m
+      memory: 512Mi
 
   # This is to set up the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   livenessProbe:
@@ -333,6 +333,14 @@ ebJob:
     httpGet:
       path: /metrics
       port: metric
+
+  # This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
   podDisruptionBudget:
     # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -386,7 +394,7 @@ ebJob:
             delay_timeout: 1s # 0 means default timeout 1s
             target_exp_decay_timeout: 1s # 0 means default timeout 1s
             target_backoff_timeout: 1s # 0 means default timeout 1s
-            workers_per_mq_topic: 1024
+            workers_per_mq_topic: 10000
         data:
           database:
             driver: postgres
@@ -436,13 +444,41 @@ postgresql-ha:
   fullnameOverride: "eb-pg-ha"
   pgpool:
     replicaCount: 2
-    resourcesPreset: "small"
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 512Mi
+    nodeAffinityPreset:
+      type: "hard"
+  postgresql:
+    resources:
+      limits:
+        cpu: 300m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    nodeAffinityPreset:
+      type: "hard"
 
 redis:
   enabled: true
   fullnameOverride: "eb-redis"
   sentinel:
     enabled: true
+  replica:
+    resources:
+      limits:
+        cpu: 300m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    nodeAffinityPreset:
+      type: "hard"
 
 rocketmq:
   enabled: true
