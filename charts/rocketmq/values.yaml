@@ -48,7 +48,7 @@ broker:
 
   persistence:
     enabled: true
-    size: 20Gi
+    size: 500Gi
 #    storageClass: "gp2"
 
   aclConfigMapEnabled: false
@@ -113,7 +113,7 @@ nameserver:
 
   persistence:
     enabled: false
-    size: 20Gi
+    size: 10Gi
 #    storageClass: "gp2"
 
   affinityOverride: {}
@@ -265,7 +265,7 @@ controller:
     targetMemoryUtilizationPercentage: 80
   persistence:
     enabled: true
-    size: 20Gi
+    size: 10Gi
     accessModes:
       - ReadWriteOnce
 
