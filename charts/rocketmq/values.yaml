@@ -13,7 +13,7 @@ podSecurityContext:
 
 broker:
   size:
-    master: 3
+    master: 2
     replica: 1
 
   # podSecurityContext: {}
@@ -22,33 +22,33 @@ broker:
   master:
     brokerRole: SYNC_MASTER
     jvm:
-      maxHeapSize: 1300M
+      maxHeapSize: 2600M
       # javaOptsOverride: ""
     resources:
       limits:
-        cpu: 4
-        memory: 16Gi
+        cpu: 6000m
+        memory: 8Gi
       requests:
-        cpu: 400m
-        memory: 2Gi
+        cpu: 2000m
+        memory: 4Gi
 
   replica:
     jvm:
-      maxHeapSize: 1300M
+      maxHeapSize: 2600M
       # javaOptsOverride: ""
     resources:
       limits:
-        cpu: 4
-        memory: 16Gi
+        cpu: 6000m
+        memory: 8Gi
       requests:
-        cpu: 400m
-        memory: 2Gi
+        cpu: 2000m
+        memory: 4Gi
 
   hostNetwork: false
 
   persistence:
     enabled: true
-    size: 20Gi
+    size: 500Gi
 #    storageClass: "gp2"
 
   aclConfigMapEnabled: false
@@ -91,22 +91,29 @@ nameserver:
   replicaCount: 3
 
   jvm:
-    maxHeapSize: 600M
+    maxHeapSize: 300M
     # javaOptsOverride: ""
 
   resources:
     limits:
       cpu: 2
-      memory: 6Gi
+      memory: 2Gi
       ephemeral-storage: 8Gi
     requests:
       cpu: 100m
-      memory: 1Gi
+      memory: 512Mi
       ephemeral-storage: 1Gi
+
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
   persistence:
     enabled: false
-    size: 20Gi
+    size: 10Gi
 #    storageClass: "gp2"
 
   affinityOverride: {}
@@ -143,11 +150,18 @@ proxy:
 
   resources:
     limits:
-      cpu: 2
-      memory: 6Gi
+      cpu: 4000m
+      memory: 4Gi
     requests:
-      cpu: 100m
+      cpu: 1000m
       memory: 2Gi
+
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 9
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
   affinityOverride: {}
   tolerations: []
@@ -193,15 +207,15 @@ dashboard:
         password: userPass
 
   jvm:
-    maxHeapSize: 600M
+    maxHeapSize: 300M
 
   resources:
     limits:
       cpu: 1
-      memory: 2Gi
-    requests:
-      cpu: 20m
       memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 512Mi
 
   ## dashboard.readinessProbe
   readinessProbe:
@@ -234,18 +248,24 @@ controller:
   enabled: true
   replicaCount: 3
   jvm:
-    maxHeapSize: 600M
+    maxHeapSize: 500M
     # javaOptsOverride: ""
   resources:
     limits:
       cpu: 2
-      memory: 6Gi
+      memory: 2Gi
     requests:
       cpu: 100m
-      memory: 1Gi
+      memory: 768Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
   persistence:
     enabled: true
-    size: 20Gi
+    size: 10Gi
     accessModes:
       - ReadWriteOnce
 

@@ -16,8 +16,11 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  serviceName: {{ include "rocketmq.controller.fullname" $ }}
   minReadySeconds: {{ .minReadySeconds | default 20 }}
+  {{- if not .autoscaling.enabled }}
   replicas: {{ .replicaCount }}
+  {{- end }}
   podManagementPolicy: {{ .podManagementPolicy | default "Parallel" }}
   {{- with .updateStrategy }}
   updateStrategy:
