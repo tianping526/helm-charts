@@ -5,7 +5,9 @@ metadata:
   labels:
     {{- include "eventbridge.jobLabels" . | nindent 4 }}
 spec:
+  {{- if not .Values.ebJob.autoscaling.enabled }}
   replicas: {{ .Values.ebJob.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "eventbridge.jobSelectorLabels" . | nindent 6 }}
