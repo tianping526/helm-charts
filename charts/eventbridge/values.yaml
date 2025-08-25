@@ -451,8 +451,6 @@ postgresql-ha:
       requests:
         cpu: 100m
         memory: 512Mi
-    nodeAffinityPreset:
-      type: "hard"
   postgresql:
     resources:
       limits:
@@ -461,8 +459,6 @@ postgresql-ha:
       requests:
         cpu: 100m
         memory: 256Mi
-    nodeAffinityPreset:
-      type: "hard"
 
 redis:
   enabled: true
@@ -477,8 +473,6 @@ redis:
       requests:
         cpu: 100m
         memory: 128Mi
-    nodeAffinityPreset:
-      type: "hard"
 
 rocketmq:
   enabled: true
