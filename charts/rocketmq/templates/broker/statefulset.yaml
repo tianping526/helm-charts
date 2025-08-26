@@ -94,7 +94,7 @@ spec:
         {{- toYaml $.Values.podSecurityContext | nindent 8 }}
         {{- end }}
       containers:
-      - name: broker
+      - name: {{ $clusterRole }}
         image: {{ $image | quote }}
         imagePullPolicy: {{ $.Values.image.pullPolicy | default "IfNotPresent" }}
         {{- with $.Values.broker.containerSecurityContext }}
