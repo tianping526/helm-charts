@@ -145,7 +145,7 @@ proxy:
   enabled: true
   replicaCount: 3
   jvm:
-    maxHeapSize: 1300M
+    maxHeapSize: 1000M
     # javaOptsOverride: ""
 
   resources:
