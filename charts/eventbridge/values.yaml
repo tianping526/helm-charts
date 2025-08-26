@@ -106,10 +106,10 @@ ebService:
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
     limits:
       cpu: 3000m
-      memory: 1024Mi
+      memory: 768Mi
     requests:
       cpu: 1000m
-      memory: 512Mi
+      memory: 384Mi
 
   # This is to set up the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   livenessProbe:
@@ -319,10 +319,10 @@ ebJob:
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
     limits:
       cpu: 3000m
-      memory: 1Gi
+      memory: 768Mi
     requests:
       cpu: 1000m
-      memory: 512Mi
+      memory: 384Mi
 
   # This is to set up the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   livenessProbe:
@@ -394,7 +394,7 @@ ebJob:
             delay_timeout: 1s # 0 means default timeout 1s
             target_exp_decay_timeout: 1s # 0 means default timeout 1s
             target_backoff_timeout: 1s # 0 means default timeout 1s
-            workers_per_mq_topic: 10000
+            workers_per_mq_topic: 4096
         data:
           database:
             driver: postgres
