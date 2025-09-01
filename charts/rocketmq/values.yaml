@@ -112,7 +112,7 @@ nameserver:
     targetMemoryUtilizationPercentage: 80
 
   persistence:
-    enabled: false
+    enabled: true
     size: 10Gi
 #    storageClass: "gp2"
 
