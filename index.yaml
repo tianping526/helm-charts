@@ -82,6 +82,23 @@ entries:
   rocketmq:
   - apiVersion: v2
     appVersion: 5.3.3
+    created: "2025-09-02T04:34:41.462634779Z"
+    description: A Helm chart for deploying a RocketMQ cluster
+    digest: b167242ee225e2af4f355e5ab97203aebe54e645aeb0566d4fa83743bb409826
+    keywords:
+    - rocketmq
+    - kubernetes
+    - apache
+    maintainers:
+    - email: 1553260215@qq.com
+      name: tianping526
+    name: rocketmq
+    type: application
+    urls:
+    - https://github.com/tianping526/helm-charts/releases/download/rocketmq-5.3.6/rocketmq-5.3.6.tgz
+    version: 5.3.6
+  - apiVersion: v2
+    appVersion: 5.3.3
     created: "2025-09-01T09:54:09.802781187Z"
     description: A Helm chart for deploying a RocketMQ cluster
     digest: 8e891838296266e6b5ddefb9f5cde58d4c964e2770650cfd16ffa72bbfe4390c
@@ -131,4 +148,4 @@ entries:
     urls:
     - https://github.com/tianping526/helm-charts/releases/download/rocketmq-5.3.3/rocketmq-5.3.3.tgz
     version: 5.3.3
-generated: "2025-09-01T09:57:43.861844487Z"
+generated: "2025-09-02T04:34:41.462670316Z"
