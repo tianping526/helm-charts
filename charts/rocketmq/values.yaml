@@ -112,7 +112,7 @@ nameserver:
     targetMemoryUtilizationPercentage: 80
 
   persistence:
-    enabled: true
+    enabled: false
     size: 10Gi
 #    storageClass: "gp2"
 
@@ -157,7 +157,7 @@ proxy:
       memory: 2Gi
 
   autoscaling:
-    enabled: true
+    enabled: false
     minReplicas: 3
     maxReplicas: 9
     targetCPUUtilizationPercentage: 80
