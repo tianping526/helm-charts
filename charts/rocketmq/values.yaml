@@ -143,6 +143,7 @@ nameserver:
 
 proxy:
   enabled: true
+  statefulSet: true
   replicaCount: 3
   jvm:
     maxHeapSize: 1000M

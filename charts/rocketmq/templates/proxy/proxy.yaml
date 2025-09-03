@@ -4,7 +4,11 @@
 {{- $configmapName := include "rocketmq.configmap.fullname" $ -}}
 {{- $image := printf "%s:%s" $.Values.image.repository $.Values.image.tag }}
 apiVersion: apps/v1
+{{- if .statefulSet }}
+kind: StatefulSet
+{{- else }}
 kind: Deployment
+{{- end }}
 metadata:
   name: {{ include "rocketmq.proxy.fullname" $ | quote }}
   labels:
@@ -17,6 +21,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  {{- if .statefulSet }}
+  serviceName: {{ include "rocketmq.proxy.fullname" $ }}
+  {{- end }}
   minReadySeconds: {{ .minReadySeconds | default 20 }}
   {{- if not .autoscaling.enabled }}
   replicas: {{ .replicaCount }}

@@ -8,7 +8,11 @@ metadata:
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
+    {{- if .Values.proxy.statefulSet }}
+    kind: StatefulSet
+    {{- else }}
     kind: Deployment
+    {{- end }}
     name: {{ include "rocketmq.proxy.fullname" . }}
   minReplicas: {{ .Values.proxy.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.proxy.autoscaling.maxReplicas }}
