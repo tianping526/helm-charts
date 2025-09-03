@@ -1,12 +1,12 @@
 dependencies:
 - name: postgresql-ha
   repository: https://charts.bitnami.com/bitnami
-  version: 16.0.22
+  version: 16.3.2
 - name: redis
   repository: https://charts.bitnami.com/bitnami
-  version: 21.2.14
+  version: 22.0.7
 - name: rocketmq
   repository: https://tianping526.github.io/helm-charts
-  version: 5.3.6
-digest: sha256:d0bf6e18604e2968b05ac289875146fb7cfadb8c7b68884c787e7e9b4e689f48
-generated: "2025-09-02T12:36:54.337846+08:00"
+  version: 5.3.7
+digest: sha256:91c523ae5e0acc2f49e74f85dc71fa823e657fd310204ba02c407945b4fdb60c
+generated: "2025-09-03T15:06:58.277655+08:00"
