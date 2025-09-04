@@ -390,8 +390,8 @@ ebJob:
             addr: 0.0.0.0:8000
             timeout: 1s
           event:
-            source_timeout: 1s # 0 means default timeout 1s
-            delay_timeout: 1s # 0 means default timeout 1s
+            source_timeout: 2s # 0 means default timeout 1s
+            delay_timeout: 2s # 0 means default timeout 1s
             target_exp_decay_timeout: 1s # 0 means default timeout 1s
             target_backoff_timeout: 1s # 0 means default timeout 1s
             workers_per_mq_topic: 4096
