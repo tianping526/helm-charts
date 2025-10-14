@@ -196,7 +196,7 @@ dashboard:
   image:
     repository: "apacherocketmq/rocketmq-dashboard"
     pullPolicy: IfNotPresent
-    tag: "2.0.1"
+    tag: "2.1.0"
 
   auth:
     enabled: true
