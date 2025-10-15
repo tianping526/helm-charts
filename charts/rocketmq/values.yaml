@@ -244,9 +244,9 @@ dashboard:
     #      - rocketmq-dashboard.example.com
 
 ## controller mode is an experimental feature
-controllerModeEnabled: true
+controllerModeEnabled: false
 controller:
-  enabled: true
+  enabled: false
   replicaCount: 3
   jvm:
     maxHeapSize: 500M
