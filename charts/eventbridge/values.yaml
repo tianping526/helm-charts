@@ -426,7 +426,7 @@ dashboards:
 
 postgresql-ha:
   enabled: true
-  fullnameOverride: "eb-pg-ha" # Do not change this value unless you know what you are doing.
+  fullnameOverride: "eb-pg-ha"  # Do not change this value unless you know what you are doing.
   pgpool:
     replicaCount: 2
     image:
@@ -470,7 +470,7 @@ cnpg:
 
 redis:
   enabled: true
-  fullnameOverride: "eb-redis" # Do not change this value unless you know what you are doing.
+  fullnameOverride: "eb-redis"  # Do not change this value unless you know what you are doing.
   sentinel:
     enabled: true
   replica:
@@ -484,4 +484,4 @@ redis:
 
 rocketmq:
   enabled: true
-  fullnameOverride: "eb-rmq" # Do not change this value unless you know what you are doing.
+  fullnameOverride: "eb-rmq"  # Do not change this value unless you know what you are doing.
