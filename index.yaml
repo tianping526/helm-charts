@@ -3,6 +3,32 @@ entries:
   eventbridge:
   - apiVersion: v2
     appVersion: 1.12.2
+    created: "2025-11-11T10:17:04.5379402Z"
+    dependencies:
+    - condition: postgresql-ha.enabled
+      name: postgresql-ha
+      repository: https://tianping526.github.io/charts
+      version: ~16.3.4
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: ~23.2.12
+    - condition: rocketmq.enabled
+      name: rocketmq
+      repository: https://tianping526.github.io/helm-charts
+      version: ~5.4.1
+    description: EventBridge Helm chart
+    digest: 1ced94756434187a222cb8065ee00fcaec68dfe5ac347c52aaa58176263b3148
+    maintainers:
+    - email: 1553260215@qq.com
+      name: tianping526
+    name: eventbridge
+    type: application
+    urls:
+    - https://github.com/tianping526/helm-charts/releases/download/eventbridge-1.13.0/eventbridge-1.13.0.tgz
+    version: 1.13.0
+  - apiVersion: v2
+    appVersion: 1.12.2
     created: "2025-10-20T02:36:52.908472188Z"
     dependencies:
     - condition: postgresql-ha.enabled
@@ -398,4 +424,4 @@ entries:
     urls:
     - https://github.com/tianping526/helm-charts/releases/download/rocketmq-5.3.3/rocketmq-5.3.3.tgz
     version: 5.3.3
-generated: "2025-10-20T02:36:52.908514135Z"
+generated: "2025-11-11T10:17:04.537992747Z"
