@@ -154,17 +154,7 @@ ebService:
   #   mountPath: "/etc/foo"
   #   readOnly: true
 
-  env:
-    - name: POSTGRES_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: eb-pg-ha-postgresql
-          key: password
-    - name: REDIS_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: eb-redis
-          key: redis-password
+  env: []
 
   # Configurations containing sensitive information
   secret:
@@ -175,7 +165,7 @@ ebService:
       bootstrap:
         data:
           database:
-            source: postgresql://postgres:${POSTGRES_PASSWORD}@eb-pg-ha-pgpool:5432/postgres
+            source: postgresql://eb:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/eb
           redis:
             password: ${REDIS_PASSWORD}
         auth:
@@ -362,12 +352,7 @@ ebJob:
   #   mountPath: "/etc/foo"
   #   readOnly: true
 
-  env:
-    - name: POSTGRES_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: eb-pg-ha-postgresql
-          key: password
+  env: []
 
   # Configurations containing sensitive information
   secret:
@@ -378,7 +363,7 @@ ebJob:
       bootstrap:
         data:
           database:
-            source: postgresql://postgres:${POSTGRES_PASSWORD}@eb-pg-ha-pgpool:5432/postgres
+            source: postgresql://eb:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/eb
 
   configmap:
     config.yaml: |
@@ -441,9 +426,11 @@ dashboards:
 
 postgresql-ha:
   enabled: true
-  fullnameOverride: "eb-pg-ha"
+  fullnameOverride: "eb-pg-ha"  # Do not change this value unless you know what you are doing.
   pgpool:
     replicaCount: 2
+    image:
+      repository: bitnamilegacy/pgpool
     resources:
       limits:
         cpu: 500m
@@ -452,6 +439,11 @@ postgresql-ha:
         cpu: 100m
         memory: 512Mi
   postgresql:
+    image:
+      repository: bitnamilegacy/postgresql-repmgr
+    headlessWithNotReadyAddresses: true
+    username: eb
+    database: eb
     resources:
       limits:
         cpu: 300m
@@ -460,9 +452,25 @@ postgresql-ha:
         cpu: 100m
         memory: 256Mi
 
+cnpg:
+  enabled: false
+  instances: 3
+  initdb:
+    database: eb
+    owner: eb
+  storage:
+    size: 8Gi
+  resources:
+    limits:
+      cpu: 300m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
 redis:
   enabled: true
-  fullnameOverride: "eb-redis"
+  fullnameOverride: "eb-redis"  # Do not change this value unless you know what you are doing.
   sentinel:
     enabled: true
   replica:
@@ -476,4 +484,4 @@ redis:
 
 rocketmq:
   enabled: true
-  fullnameOverride: "eb-rmq"
+  fullnameOverride: "eb-rmq"  # Do not change this value unless you know what you are doing.

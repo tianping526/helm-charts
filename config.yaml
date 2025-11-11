@@ -3,4 +3,5 @@ chart-dirs:
 target-branch: main
 chart-repos:
   - bitnami=https://charts.bitnami.com/bitnami
+  - my-bitnami=https://tianping526.github.io/charts
   - tianping526=https://tianping526.github.io/helm-charts

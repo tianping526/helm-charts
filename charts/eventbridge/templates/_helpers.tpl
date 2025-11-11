@@ -100,3 +100,10 @@ Create the name of the service account used by the EventBridge Job
     {{- print "policy/v1beta1" -}}
   {{- end -}}
 {{- end -}}
+
+{{/* Get Cloud Native PostgreSQL name */}}
+{{- define "eventbridge.cnpg.name" -}}
+{{- if .Values.cnpg.enabled }}
+{{- default .Values.cnpg.name "eb-cnpg" }}
+{{- end }}
+{{- end }}
