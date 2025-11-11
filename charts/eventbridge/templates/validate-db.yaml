@@ -1,0 +1,12 @@
+{{- /*
+Validate that exactly one of postgresql-ha.enabled and cnpg.enabled is true.
+Fails the Helm install/upgrade if both are enabled or both are disabled.
+*/ -}}
+{{- $pgHa := index .Values "postgresql-ha" | default dict -}}
+{{- $pgHaEnabled := ternary (index $pgHa "enabled") true (hasKey $pgHa "enabled") -}}
+{{- $cnpg := .Values.cnpg | default dict -}}
+{{- $cnpgEnabled := (index $cnpg "enabled") | default false -}}
+{{- if or (and $pgHaEnabled $cnpgEnabled) (and (not $pgHaEnabled) (not $cnpgEnabled)) -}}
+{{- fail (printf "Invalid configuration: exactly one of postgresql-ha.enabled (%t) or cnpg.enabled (%t) must be true" $pgHaEnabled $cnpgEnabled) -}}
+{{- end -}}
+

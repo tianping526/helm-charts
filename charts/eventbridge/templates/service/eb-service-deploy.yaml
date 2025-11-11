@@ -14,8 +14,8 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/eb-service-cm.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/eb-service-secret.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/service/eb-service-cm.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/service/eb-service-secret.yaml") . | sha256sum }}
         {{- with .Values.ebService.podAnnotations }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -46,10 +46,22 @@ spec:
           envFrom:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.ebService.env }}
           env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ ternary (printf "%s-app" (include "eventbridge.cnpg.name" .)) "eb-pg-ha-postgresql" .Values.cnpg.enabled }}
+                  key: password
+            - name: POSTGRES_HOST
+              value: {{ ternary (printf "%s-rw.%s.svc.cluster.local" (include "eventbridge.cnpg.name" .) .Release.Namespace) (printf "%s-pgpool.%s.svc.cluster.local" "eb-pg-ha" .Release.Namespace) .Values.cnpg.enabled | quote }}
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: eb-redis
+                  key: redis-password
+            {{- with .Values.ebService.env }}
             {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- end }}
           {{- with .Values.ebService.service.ports }}
           ports:
             {{- toYaml . | nindent 12 }}

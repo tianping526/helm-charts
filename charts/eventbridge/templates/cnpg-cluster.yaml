@@ -1,0 +1,33 @@
+{{- if .Values.cnpg.enabled }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "eventbridge.cnpg.name" . }}
+  labels:
+    helm.sh/chart: {{ include "eventbridge.chart" . }}
+    {{- if .Chart.AppVersion }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    {{- end }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  enableSuperuserAccess: {{ default false .Values.cnpg.enableSuperuserAccess }}
+  instances: {{ .Values.cnpg.instances }}
+  bootstrap:
+    initdb:
+      {{- with .Values.cnpg.initdb }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  storage:
+    size: {{ .Values.cnpg.storage.size }}
+    {{- if .Values.cnpg.storage.storageClass }}
+    storageClass: {{ .Values.cnpg.storage.storageClass }}
+    {{- end }}
+  {{- if .Values.cnpg.affinity }}
+  affinity:
+    {{- toYaml .Values.cnpg.affinity | nindent 4 }}
+  {{- end }}
+  {{- if .Values.cnpg.resources }}
+  resources:
+    {{- toYaml .Values.cnpg.resources | nindent 4 }}
+  {{- end }}
+{{- end }}

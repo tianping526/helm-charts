@@ -14,8 +14,8 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/eb-job-cm.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/eb-job-secret.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/job/eb-job-cm.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/job/eb-job-secret.yaml") . | sha256sum }}
         {{- with .Values.ebJob.podAnnotations }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -46,10 +46,17 @@ spec:
           envFrom:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.ebJob.env }}
           env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ ternary (printf "%s-app" (include "eventbridge.cnpg.name" .)) "eb-pg-ha-postgresql" .Values.cnpg.enabled }}
+                  key: password
+            - name: POSTGRES_HOST
+              value: {{ ternary (printf "%s-ro.%s.svc.cluster.local" (include "eventbridge.cnpg.name" .) .Release.Namespace) (printf "%s-pgpool.%s.svc.cluster.local" "eb-pg-ha" .Release.Namespace) .Values.cnpg.enabled | quote }}
+            {{- with .Values.ebJob.env }}
             {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- end }}
           {{- with .Values.ebJob.service.ports }}
           ports:
             {{- toYaml . | nindent 12 }}
