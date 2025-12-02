@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 5.3.3
+appVersion: 5.3.4
 description: A Helm chart for deploying a RocketMQ cluster
 keywords:
 - rocketmq
@@ -10,4 +10,4 @@ maintainers:
     email: 1553260215@qq.com
 name: rocketmq
 type: application
-version: 5.4.1
+version: 5.5.0
