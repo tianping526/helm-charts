@@ -2,7 +2,7 @@ clusterName: "DefaultCluster"
 
 image:
   repository: "apache/rocketmq"
-  tag: "5.3.3"
+  tag: "5.3.4"
   pullPolicy: IfNotPresent
   pullSecrets: []
   # - name: secretName
@@ -244,9 +244,9 @@ dashboard:
     #      - rocketmq-dashboard.example.com
 
 ## controller mode is an experimental feature
-controllerModeEnabled: false
+controllerModeEnabled: true
 controller:
-  enabled: false
+  enabled: true
   replicaCount: 3
   jvm:
     maxHeapSize: 500M
