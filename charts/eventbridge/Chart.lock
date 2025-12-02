@@ -4,9 +4,9 @@ dependencies:
   version: 16.3.4
 - name: redis
   repository: https://charts.bitnami.com/bitnami
-  version: 23.2.12
+  version: 24.0.0
 - name: rocketmq
   repository: https://tianping526.github.io/helm-charts
-  version: 5.4.1
-digest: sha256:bb4ff296e22751c6ac137fd9eaf25736428ccfd7c02b46ad0ab0beebbaf464d0
-generated: "2025-11-11T14:21:42.809208+08:00"
+  version: 5.5.0
+digest: sha256:e72587cf4113b451467bba9de4c7590f32502fb0dee4fc464ee8861cfc1c1dcc
+generated: "2025-12-02T15:10:10.120002+08:00"
